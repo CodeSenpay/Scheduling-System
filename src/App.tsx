@@ -29,14 +29,21 @@ const ClearanceValidationPage = lazy(
 );
 const ClaimingOfIDPage = lazy(() => import("./pages/ClaimingOfIDPage"));
 
+type UserProps = {
+  student_id?: string;
+  user_id?: string;
+}
+
 function App() {
   const { setUser, setSemester, setSchoolYear } = useUser();
+
 
   async function getUserData(params: {
     student_id?: string;
     user_id?: string;
   }) {
     try {
+
       // Extract student_id or user_id from params
       const { student_id, user_id } = params;
       const id = student_id || user_id;
@@ -65,15 +72,20 @@ function App() {
   const verifyAndFetchUser = async () => {
     try {
       const res = await apiClient.get("/auth/verify-jwt");
-
+      
       if (res.data.success) {
         const user = res.data.user;
         // Try to get student_id, if not present, try userId
-        const params: { student_id?: string; user_id?: string } = {};
+        const params: UserProps = {};
+
         if (user?.student_id) {
+
           params.student_id = user.student_id;
+
         } else if (user?.userId) {
+
           params.user_id = user.userId;
+
         }
         const userData = await getUserData(params);
         setUser(userData);
