@@ -1,38 +1,43 @@
-import React, { useMemo, useState } from "react";
+import AddIcon from "@mui/icons-material/Add";
+import ArticleIcon from "@mui/icons-material/Article";
+import AutoDeleteIcon from "@mui/icons-material/AutoDelete";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import EventAvailableIcon from "@mui/icons-material/EventAvailable";
+import HowToRegIcon from "@mui/icons-material/HowToReg";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import ManageSearchIcon from "@mui/icons-material/ManageSearch";
+import PeopleIcon from "@mui/icons-material/People";
+import PreviewIcon from "@mui/icons-material/Preview";
 import { createTheme } from "@mui/material/styles";
+import type { Navigation, Router } from "@toolpad/core/AppProvider";
 import { AppProvider } from "@toolpad/core/AppProvider";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { PageContainer } from "@toolpad/core/PageContainer";
-import type { Navigation, Router } from "@toolpad/core/AppProvider";
-import AddIcon from "@mui/icons-material/Add";
-import ArticleIcon from "@mui/icons-material/Article";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import EventAvailableIcon from "@mui/icons-material/EventAvailable";
-import ManageSearchIcon from "@mui/icons-material/ManageSearch";
-import AutoDeleteIcon from "@mui/icons-material/AutoDelete";
-import HowToRegIcon from "@mui/icons-material/HowToReg";
-import PreviewIcon from "@mui/icons-material/Preview";
+import React, { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import AccountCustomSlotProps from "../components/AccountCustomSlotProps";
-import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
-import PeopleIcon from "@mui/icons-material/People";
+import Loading from "../components/Loading";
 import Modal from "../components/Modal";
+import { useUser } from "../services/UserContext";
+import { getUserData } from "../services/Utils";
+import { verifyToken } from "../services/verifyToken";
 import AddAvailability from "./AddAvailability";
 import AdminDashboard from "./AdminDashboard";
 import ApproveTransactionPage from "./ApproveTransactionPage";
+import DeleteAvailability from "./DeleteAvailability";
+import ManageAccountLoginPage from "./ManageAccountLoginPage";
+import ManageAdminPasswords from "./ManageAdminPasswords";
 import RegisterAdminPage from "./RegisterAdminPage";
 import ReportPage from "./ReportPage";
 import ViewAvailability from "./ViewAvailability";
-import DeleteAvailability from "./DeleteAvailability";
-import ManageAdminPasswords from "./ManageAdminPasswords";
-import ManageAccountLoginPage from "./ManageAccountLoginPage";
-import { useUser } from "../services/UserContext";
+
 
 function useCurrentUser() {
-  const { userdata } = useUser();
-
+  const { userdata, } = useUser();
+  
   return {
     email: userdata?.email || "",
-    role: userdata?.user_level || "admin",
+    role: userdata?.user_level  ||"",
   };
 }
 
@@ -154,11 +159,19 @@ function renderCurrentPage(pathname: string, role: string) {
   }
 }
 
+
+
+
 export default function AdminDashboardPage() {
   const router = useDemoRouter("/admin-dashboard");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const currentUser = useCurrentUser();
+  const [isLoading,setIsLoading] = useState(false);
+  const { setUser } = useUser();
 
+  const navigate = useNavigate();
+
+  const currentUser = useCurrentUser();
+  
   const navigation = useMemo(
     () => getNavigationForRole(currentUser.role),
     [currentUser.role]
@@ -173,8 +186,35 @@ export default function AdminDashboardPage() {
     []
   );
 
+      const checkToken = async () => {
+      try{
+
+        setIsLoading(true);
+        const result = await verifyToken();
+        
+        if (result?.success) {
+          const userData = await getUserData({id: result?.user.userId});
+
+          setUser(userData);
+        }else{
+          navigate("/login/admin", { replace: true });
+        }
+
+      }catch(err:any){
+          console.error(`Error Message: ${err.message}` )
+      }finally{
+        setIsLoading(false);
+      }
+    };
+
+useEffect(() => {
+  checkToken();
+},[])
+
+
   return (
     <>
+      {isLoading && <Loading />}
       {isModalOpen && (
         <Modal isOpen={isModalOpen} handleClose={() => setIsModalOpen(false)}>
           <RegisterAdminPage />

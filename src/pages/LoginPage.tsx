@@ -1,8 +1,9 @@
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { Button, TextField } from "@mui/material";
+import { Button, IconButton, InputAdornment, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import Loading from "../components/Loading";
 import CustomModal from "../components/Modal.tsx";
 import {
   notifyError,
@@ -10,10 +11,8 @@ import {
   notifySuccess,
 } from "../components/ToastUtils";
 import apiClient from "../services/apiClient.ts";
-import { IconButton, InputAdornment } from "@mui/material";
 import { useUser } from "../services/UserContext.ts";
 import { verifyToken } from "../services/verifyToken.ts";
-import Loading from "../components/Loading";
 
 function LoginPage() {
   type dataProps = {
@@ -70,7 +69,7 @@ function LoginPage() {
     const checkToken = async () => {
       const result = await verifyToken();
 
-      if (result?.success) {
+      if (result?.success && result?.user?.user_level === "ADMIN") {
         navigate("/admin-dashboard");
       }
     };
@@ -85,16 +84,15 @@ function LoginPage() {
           "Content-Type": "application/json",
         },
       });
-      notifySuccess("Login successful!");
-
+      
       setUser(response.data.user);
-
+      
       const userLevel = response.data?.user.user_level;
-      if (userLevel === "ADMIN") {
+      
+      if (userLevel === "ADMIN" || userLevel === "SUDO") {
+        notifySuccess("Login successful!");
         navigate("/admin-dashboard");
-      } else {
-        navigate("/dashboard");
-      }
+      } 
     } catch (err: unknown) {
       const error = err as {
         response?: { status?: number; data?: { message?: string } };

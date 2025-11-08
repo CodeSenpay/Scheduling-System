@@ -1,19 +1,19 @@
 import Box from "@mui/material/Box";
+import CircularProgress from "@mui/material/CircularProgress";
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
-import { useUser } from "../services/UserContext";
-import { notifyError } from "../components/ToastUtils";
-import { useEffect, useState } from "react";
-import CircularProgress from "@mui/material/CircularProgress";
 import { BarChart } from "@mui/x-charts";
+import { useEffect, useState } from "react";
+import { notifyError } from "../components/ToastUtils";
+import { useUser } from "../services/UserContext";
 
 // Import Material-UI Icons for better visual representation
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
-import PermIdentityIcon from "@mui/icons-material/PermIdentity";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import DashboardIcon from "@mui/icons-material/Dashboard"; // For overall dashboard title
+import PermIdentityIcon from "@mui/icons-material/PermIdentity";
 import apiClient from "../services/apiClient";
 
 // TypeScript interfaces for API responses

@@ -8,58 +8,34 @@ import {
 } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import Loading from "./components/Loading";
+import NotFoundPage from "./components/NotFoundPage";
 import ProtectedPages from "./components/ProtectedPages";
+import AdminDashboard from "./pages/AdminSection";
+import DashboardPage from "./pages/DashboardPage";
 import LoginPage from "./pages/LoginPage";
 import LoginPageStudent from "./pages/LoginPageStudent";
 import { useUser } from "./services/UserContext";
 import { fetchSemester, fetchShoolYear } from "./services/Utils";
-import apiClient from "./services/apiClient";
-
-const NotFoundPage = lazy(() => import("./components/NotFoundPage"));
-const DashboardPage = lazy(() => import("./pages/DashboardPage"));
 const CalendarPage = lazy(() => import("./pages/Calendar"));
 const VMGOPage = lazy(() => import("./pages/VMGOPage"));
 const AboutUsPage = lazy(() => import("./pages/AboutUsPage"));
 const ProfilePage = lazy(() => import("./pages/ProfilePage"));
 const SubsidyPayoutPage = lazy(() => import("./pages/SubsidyPayoutPage"));
-const AdminDashboard = lazy(() => import("./pages/AdminSection"));
 
 const ClearanceValidationPage = lazy(
   () => import("./pages/ClearanceValidationPage")
 );
 const ClaimingOfIDPage = lazy(() => import("./pages/ClaimingOfIDPage"));
 
-type UserProps = {
-  student_id?: string;
-  user_id?: string;
-}
+// type UserProps = {
+//   student_id?: string;
+//   user_id?: string;
+// }
 
 function App() {
-  const { setUser, setSemester, setSchoolYear } = useUser();
+  const { setSemester, setSchoolYear } = useUser();
 
 
-  async function getUserData(params: {
-    student_id?: string;
-    user_id?: string;
-  }) {
-    try {
-
-      // Extract student_id or user_id from params
-      const { student_id, user_id } = params;
-      const id = student_id || user_id;
-
-      if (!id) {
-        throw new Error("No student_id or user_id found in params");
-      }
-
-      const response = await apiClient.post(`/auth/get-user-data`, { id });
-      // console.log(response.data);
-      return response.data.data[0];
-    } catch (error) {
-      console.log("Failed to fetch user data:", error);
-      return null;
-    }
-  }
 
   const setSchoolYearAndSemester = async () => {
     const semester = await fetchSemester();
@@ -69,41 +45,42 @@ function App() {
     setSemester(semester);
   };
 
-  const verifyAndFetchUser = async () => {
-    try {
-      const res = await apiClient.get("/auth/verify-jwt");
+  // const verifyAndFetchUser = async () => {
+  //   try {
+  //     const res = await apiClient.get("/auth/verify-jwt");
       
-      if (res.data.success) {
-        const user = res.data.user;
-        // Try to get student_id, if not present, try userId
-        const params: UserProps = {};
+  //     if (res.data.success) {
+  //       const user = res.data.user;
+  //       // Try to get student_id, if not present, try userId
+  //       const params: UserProps = {};
 
-        if (user?.student_id) {
 
-          params.student_id = user.student_id;
+  //       if (user?.student_id) {
 
-        } else if (user?.userId) {
+  //         params.student_id = user.student_id;
 
-          params.user_id = user.userId;
+  //       } else if (user?.userId) {
 
-        }
-        const userData = await getUserData(params);
-        setUser(userData);
-      } else {
-        setUser(null);
-      }
-    } catch {
-      setUser(null);
-    }
-  };
+  //         params.user_id = user.userId;
+
+  //       }
+  //       const userData = await getUserData(params);
+  //       setUser(userData);
+  //     } else {
+  //       setUser(null);
+  //     }
+  //   } catch {
+  //     setUser(null);
+  //   }
+  // };
 
   useEffect(() => {
     setSchoolYearAndSemester();
   }, []);
 
-  useEffect(() => {
-    verifyAndFetchUser();
-  }, [setUser]);
+  // useEffect(() => {
+  //   verifyAndFetchUser();
+  // }, []);
 
   const router = createBrowserRouter(
     createRoutesFromElements(

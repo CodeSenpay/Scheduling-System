@@ -8,14 +8,15 @@ import apiClient from "../services/apiClient";
 
 import { IconButton, InputAdornment } from "@mui/material";
 import { useUser } from "../services/UserContext";
+import { getUserData } from "../services/Utils";
 import { verifyToken } from "../services/verifyToken";
+type dataProps = {
+  studentId: string;
+  password: string;
+  user_level: string;
+};
 
 function LoginPageStudent() {
-  type dataProps = {
-    studentId: string;
-    password: string;
-    user_level: string;
-  };
 
   const { register, handleSubmit } = useForm<dataProps>();
 
@@ -27,18 +28,22 @@ function LoginPageStudent() {
     setShowPassword((prev) => !prev);
   };
 
-  const { userdata, setUser } = useUser();
+  const { setUser } = useUser();
 
-  useEffect(() => {
+
     const checkToken = async () => {
       const result = await verifyToken();
-
+      console.log(result.user);
       if (result?.success) {
+        const userData = await getUserData({id: result?.user?.student_id});
+        setUser(userData);
         navigate("/dashboard");
       }
     };
+
+  useEffect(() => {
     checkToken();
-  }, [userdata, navigate]);
+  }, []);
 
   const handleLogin: SubmitHandler<dataProps> = async (data) => {
     setLoading(true);

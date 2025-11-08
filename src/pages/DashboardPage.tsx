@@ -9,16 +9,19 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import * as React from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Loading from "../components/Loading";
 import NavBar from "../components/NavBar";
 import { notifyInfo } from "../components/ToastUtils";
 import { useUser } from "../services/UserContext";
+import { getUserData } from "../services/Utils";
+import { verifyToken } from "../services/verifyToken";
 import { socket } from "../socket";
 const DONT_SHOW_EMAIL_DIALOG_KEY = "dashboard_dont_show_email_dialog";
 
 export default function DashboardPage() {
   const navigate = useNavigate();
-  const { userdata } = useUser();
-
+  const { userdata,setUser } = useUser();
+  const [isLoading, setIsLoading] = React.useState(false);
   // State for email notification dialog
   const [openEmailDialog, setOpenEmailDialog] = React.useState(false);
   // State for "Don't show again" checkbox
@@ -35,7 +38,7 @@ export default function DashboardPage() {
   });
 
   // Effect to check for missing email and show dialog
-  React.useEffect(() => {
+  useEffect(() => {
     if (
       userdata &&
       (!userdata.email || userdata.email.trim() === "") &&
@@ -75,11 +78,26 @@ export default function DashboardPage() {
     }
   };
 
+    const checkToken = async () => {
+      try{
+        setIsLoading(true);
+        const result = await verifyToken();
+
+        if (result?.success) {
+          const userData = await getUserData({id: result?.user?.student_id});
+          setUser(userData);
+        }else{
+          navigate("/login", { replace: true });
+        }
+      }catch(err:any){
+          console.error(`Error Message: ${err.message}` )
+      }finally{
+        setIsLoading(false);
+      }
+    };
+
   useEffect(() => {
-    if (!userdata || userdata.user_level !== "STUDENT") {
-      navigate("/login", { replace: true });
-      return;
-    }
+    checkToken();
     socket.emit("registerUser", userdata?.student_details?.student_id);
 
     socket.on("appointmentUpdate", (appointment) => {
@@ -89,6 +107,7 @@ export default function DashboardPage() {
 
   return (
     <>
+      {isLoading && <Loading />}
       <NavBar />
       <div
         className="w-screen h-screen bg-[#f0f2f5] flex flex-col items-center justify-start gap-5"
@@ -112,6 +131,7 @@ export default function DashboardPage() {
             </span>
             !
           </h1>
+          <p className="text-md md:text-2xl text-gray-800 mb-2">{userdata?.student_details?.program}</p>
           <p className="text-lg text-gray-600">
             We're glad to see you. Select a service below to get started.
           </p>

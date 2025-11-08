@@ -9,7 +9,6 @@ const apiClient = axios.create({
 
 apiClient.interceptors.response.use(
   (response) => {
-    // console.log(`[Response] ${response.status} ${response.config.url}`);
     return response;
   },
   (error) => {

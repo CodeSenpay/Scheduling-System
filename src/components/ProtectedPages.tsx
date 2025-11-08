@@ -10,10 +10,8 @@ function ProtectedPages() {
 
     if (!response.success) {
       notifyError(response.message);
-      navigate("/login");
-      return;
+      return
     }
-
     if (response.user.userLevel === "ADMIN") {
       navigate("/admin-dashboard");
     }
