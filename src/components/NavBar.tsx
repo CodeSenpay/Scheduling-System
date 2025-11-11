@@ -1,6 +1,9 @@
 import MenuIcon from "@mui/icons-material/Menu";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import AppBar from "@mui/material/AppBar";
 import Avatar from "@mui/material/Avatar";
+import Badge from "@mui/material/Badge";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
@@ -12,10 +15,10 @@ import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../services/UserContext";
-import { notifyError, notifySuccess } from "./ToastUtils";
 import apiClient from "../services/apiClient";
+import { useUser } from "../services/UserContext";
 import Loading from "./Loading"; // Import the Loading component
+import { notifyError, notifySuccess } from "./ToastUtils";
 
 const pages = ["VMGO", "About Us", "Dashboard"];
 const settings = ["Profile", "Dashboard", "Logout"];
@@ -23,6 +26,8 @@ const settings = ["Profile", "Dashboard", "Logout"];
 function NavBar() {
   const { userdata, setUser } = useUser();
   const [loading, setLoading] = React.useState(false); // Add loading state
+  const [hasNotifications, setHasNotifications] = React.useState(false); // Track notification state
+  const [notificationCount, setNotificationCount] = React.useState(0); // Track notification count
 
   const LogoutStudent = async () => {
     setLoading(true);
@@ -111,6 +116,31 @@ function NavBar() {
     }
   };
 
+  const handleNotificationClick = () => {
+    navigate("/notification");
+  };
+
+  // Example: Fetch notifications on component mount
+  React.useEffect(() => {
+    // TODO: Replace with actual API call to fetch notifications
+    // For now, this is a placeholder to demonstrate the functionality
+    const fetchNotifications = async () => {
+      try {
+        // const response = await apiClient.get("/notifications");
+        // setHasNotifications(response.data.length > 0);
+        // setNotificationCount(response.data.length);
+        
+        // Placeholder logic - set to true to test the notification icon
+        setHasNotifications(true);
+        setNotificationCount(3);
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+      }
+    };
+
+    fetchNotifications();
+  }, []);
+
   return (
     <>
       {loading && <Loading />}
@@ -175,10 +205,44 @@ function NavBar() {
                   </Button>
                 ))}
               </Box>
-              <Box sx={{ flexGrow: 0 }}>
+              <Box sx={{ flexGrow: 0, display: "flex", alignItems: "center", gap: 1 }}>
+                <Tooltip title="Notifications">
+                  <IconButton
+                    onClick={handleNotificationClick}
+                    sx={{
+                      color: hasNotifications ? "#FFD700" : "white",
+                      transition: "color 0.3s ease",
+                    }}
+                  >
+                    <Badge badgeContent={notificationCount} color="error">
+                      {hasNotifications ? (
+                        <NotificationsActiveIcon />
+                      ) : (
+                        <NotificationsIcon />
+                      )}
+                    </Badge>
+                  </IconButton>
+                </Tooltip>
                 <Tooltip title="Open settings">
-                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar alt="Remy Sharp" src="/profile.png" />
+                  <IconButton 
+                    onClick={handleOpenUserMenu} 
+                    sx={{ 
+                      p: 0,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1
+                    }}
+                  >
+                    <Avatar alt="" src="#" />
+                    <Typography
+                      sx={{
+                        color: "white",
+                        fontSize: "0.875rem",
+                        display: { xs: "none", md: "block" }
+                      }}
+                    >
+                      {userdata?.student_details?.student_name}
+                    </Typography>
                   </IconButton>
                 </Tooltip>
                 <Menu

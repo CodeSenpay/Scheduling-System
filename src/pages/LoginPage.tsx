@@ -210,7 +210,7 @@ function LoginPage() {
           </Button>
 
           <p className="text-md text-blue-600">
-            <i>Develop By:</i> Robert Mayo/Marklan
+            <i>Developed By:</i> Robert Mayo/Marklan
           </p>
         </form>
         <CustomModal

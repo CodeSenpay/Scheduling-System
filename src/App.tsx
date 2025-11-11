@@ -21,7 +21,7 @@ const VMGOPage = lazy(() => import("./pages/VMGOPage"));
 const AboutUsPage = lazy(() => import("./pages/AboutUsPage"));
 const ProfilePage = lazy(() => import("./pages/ProfilePage"));
 const SubsidyPayoutPage = lazy(() => import("./pages/SubsidyPayoutPage"));
-
+const NotificationPage = lazy(() => import("./pages/NotificationPage"));
 const ClearanceValidationPage = lazy(
   () => import("./pages/ClearanceValidationPage")
 );
@@ -97,6 +97,7 @@ function App() {
           />
           <Route path="/vmgo" element={<VMGOPage />} />
           <Route path="/about-us" element={<AboutUsPage />} />
+          <Route path="/notification" element={<NotificationPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/subsidy-payout" element={<SubsidyPayoutPage />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />

@@ -36,7 +36,7 @@ type appointmentProps = {
   appointment_status: string;
   start_time: string;
   end_time: string;
-  user_id: string;
+  student_id: string;
   semester: string;
   school_year: string;
 };
@@ -61,7 +61,10 @@ function ApproveTransactionPage() {
     transactionTypeProps[]
   >([]);
 
+
+
   const handleApprove = (data: appointmentProps) => {
+
     const dataPayload = {
       model: "schedulesModel",
       function_name: "approveAppointment",
@@ -70,18 +73,19 @@ function ApproveTransactionPage() {
         appointment_id: data.appointment_id,
         appointment_status: "Approved",
         student_email: data.student_email,
-        student_id: data.user_id,
+        student_id: data.student_id,
       },
     };
-
+    
     setLoadingApproveId(data.appointment_id);
+
     apiClient
       .post("/scheduling-system/admin", dataPayload, {
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
       })
       .then((response) => {
-        // console.log(response.data);
+        
         if (response.data.success) {
           notifySuccess("Appointment approved successfully.");
           handleSearch();
@@ -112,7 +116,7 @@ function ApproveTransactionPage() {
         appointment_id: data.appointment_id,
         appointment_status: "Declined",
         student_email: data.student_email,
-        student_id: data.user_id,
+        student_id: data.student_id,
       },
     };
     try {
@@ -154,7 +158,6 @@ function ApproveTransactionPage() {
         appointment_id: "",
         appointment_status: "Pending",
         appointment_date: selectedDate ? selectedDate.format("YYYY-MM-DD") : "",
-        // If selectedType is '', send '' (all), else send the number
         transaction_type_id: selectedType === "" ? "" : Number(selectedType),
         user_id: "",
         semester: semester?.semester || "",
@@ -166,6 +169,7 @@ function ApproveTransactionPage() {
       const response = await apiClient.post("/scheduling-system/admin", data, {
         headers: { "Content-Type": "application/json" },
       });
+      console.log(response.data);
       setFilteredAppointments(response.data.data);
       // Reset selection on new search
       setSelectedAppointments([]);
@@ -254,11 +258,13 @@ function ApproveTransactionPage() {
     }
     setBulkLoading(true);
     try {
-      // Approve all selected appointments in parallel
+      
       await Promise.all(
         filteredAppointments
           .filter((appt) => selectedAppointments.includes(appt.appointment_id))
           .map((appt) =>
+          {
+
             apiClient.post(
               "/scheduling-system/admin",
               {
@@ -269,6 +275,7 @@ function ApproveTransactionPage() {
                   appointment_id: appt.appointment_id,
                   appointment_status: "Approved",
                   student_email: appt.student_email,
+                  student_id: appt.student_id,
                 },
               },
               {
@@ -276,6 +283,10 @@ function ApproveTransactionPage() {
                 withCredentials: true,
               }
             )
+
+            console.log(appt);
+          }
+        
           )
       );
       notifySuccess("Selected appointments approved successfully.");
@@ -433,7 +444,7 @@ function ApproveTransactionPage() {
                       {appt.transaction_title}
                     </TableCell>
                     <TableCell>{appt.appointment_date}</TableCell>
-                    <TableCell>{appt.user_id}</TableCell>
+                    <TableCell>{appt.student_id}</TableCell>
                     <TableCell>{appt.transaction_title}</TableCell>
                     <TableCell>{appt.semester}</TableCell>
                     <TableCell>{appt.school_year}</TableCell>

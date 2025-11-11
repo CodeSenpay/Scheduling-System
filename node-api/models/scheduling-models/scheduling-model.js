@@ -1,7 +1,6 @@
 import argon2 from "argon2";
 import pool from "../../config/db.conf.js";
 import logger from "../../middleware/logger.js";
-import { sendEmailToStudent } from "../../middleware/mailer.js";
 
 const getMissingFields = (requiredFields, payload) =>
   requiredFields.filter((field) => !(field in payload));
@@ -208,6 +207,7 @@ export class SchedulingModel {
 
     try {
       const jsondata = JSON.stringify(payload);
+      console.log(jsondata);
       const [rows] = await pool.query(`CALL insert_appointment(?)`, [jsondata]);
       return getRowsResult(rows);
     } catch (error) {
@@ -286,6 +286,7 @@ export class SchedulingModel {
     ];
 
     const missingFields = getMissingFields(requiredFields, payload);
+
     if (missingFields.length) {
       await logger({
         action: "approveAppointment",
@@ -307,18 +308,18 @@ export class SchedulingModel {
       ]);
 
       let emailResult = null;
-      let spResult = rows?.[0]?.[0]?.result;
+      // let spResult = rows?.[0]?.[0]?.result;
 
-      if (spResult?.success && payload.student_email) {
-        let transaction_title = spResult?.transaction_type ?? null;
-        let appointment_details = spResult?.appointment_details ?? null;
-        emailResult = await sendEmailToStudent(
-          payload.student_email,
-          payload.appointment_status,
-          transaction_title,
-          appointment_details
-        );
-      }
+      // if (spResult?.success && payload.student_email) {
+      //   let transaction_title = spResult?.transaction_type ?? null;
+      //   let appointment_details = spResult?.appointment_details ?? null;
+      //   emailResult = await sendEmailToStudent(
+      //     payload.student_email,
+      //     payload.appointment_status,
+      //     transaction_title,
+      //     appointment_details
+      //   );
+      // }
       const io = req.app.get("socketio");
       io.to(payload.student_id.toString()).emit("appointmentUpdate", {
         message: `Your Appointment ${payload.appointment_id} has been ${payload.appointment_status}`,

@@ -5,7 +5,7 @@ import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
 import Loading from "../components/Loading";
 import Modal from "../components/Modal";
-import { notifyError, notifySuccess } from "../components/ToastUtils";
+import { notifyError, notifyInfo, notifySuccess } from "../components/ToastUtils";
 import { useUser } from "../services/UserContext";
 import apiClient from "../services/apiClient";
 
@@ -122,6 +122,11 @@ function Calendar({
         headers: { "Content-Type": "application/json" },
       });
 
+      if(response.data.data.length === 0){
+        notifyInfo("No Available Dates Yet!");
+        return;
+      }
+
       if (response.data.success) {
         setTransactionTypeID(response.data.data[0].transaction_type_id);
         if (response.data.data.length != 0) {
@@ -170,7 +175,7 @@ function Calendar({
     };
 
     setIsLoading(true);
-
+    console.log(data);
     try {
       const response = await apiClient.post("/scheduling-system/user", data, {
         headers: { "Content-Type": "application/json" },
@@ -267,54 +272,58 @@ function Calendar({
         <></>
       )}
 
-      <h1 className="text-xl font-semibold">Select a Date</h1>
-      <p>Transaction: {transaction_title}</p>
-      <DayPicker
-        animate
-        className="bg-white rounded-lg shadow-md"
-        style={{ padding: "20px" }}
-        mode="single"
-        selected={selected}
-        defaultMonth={new Date()}
-        onSelect={handleDateSelection}
-        modifiers={{ available: parsedAvailableDates }}
-        modifiersClassNames={{
-          available: "text-black",
-        }}
-        disabled={(date) =>
-          date < currentDate ||
-          availableDateInfo.some(
-            (d) =>
-              d.total_slots_left === 0 &&
-              new Date(d.availability_date).toDateString() ===
-                date.toDateString()
-          ) ||
-          (!availableDateInfo.some(
-            (info) =>
-              info.college === null &&
-              new Date(info.availability_date).toDateString() ===
-                date.toDateString()
-          ) &&
-            !availableDateInfo.some(
-              (info) =>
-                info.college ===
-                  userdata?.student_details?.college.split(" -")[0] &&
-                new Date(info.availability_date).toDateString() ===
-                  date.toDateString()
-            )) ||
-          !parsedAvailableDates.some(
-            (d) => d.toDateString() === date.toDateString()
-          ) ||
-          alreadySelectedDates.some(
-            (d) => new Date(d).toDateString() === date.toDateString()
-          )
-        }
-        footer={
-          selected
-            ? `Selected: ${selected.toLocaleDateString()}`
-            : "Pick a day."
-        }
-      />
+      <div className="w-full flex flex-col items-center">
+        <h1 className="text-lg md:text-xl font-semibold mb-2 text-center">Select a Date</h1>
+        <p className="text-sm md:text-base mb-3 text-center">Transaction: {transaction_title}</p>
+        <div className="w-full max-w-full overflow-x-auto flex justify-center">
+          <DayPicker
+            animate
+            className="bg-white rounded-lg shadow-md scale-90 md:scale-100"
+            style={{ padding: "10px" }}
+            mode="single"
+            selected={selected}
+            defaultMonth={new Date()}
+            onSelect={handleDateSelection}
+            modifiers={{ available: parsedAvailableDates }}
+            modifiersClassNames={{
+              available: "text-black",
+            }}
+            disabled={(date) =>
+              date < currentDate ||
+              availableDateInfo.some(
+                (d) =>
+                  d.total_slots_left === 0 &&
+                  new Date(d.availability_date).toDateString() ===
+                    date.toDateString()
+              ) ||
+              (!availableDateInfo.some(
+                (info) =>
+                  info.college === null &&
+                  new Date(info.availability_date).toDateString() ===
+                    date.toDateString()
+              ) &&
+                !availableDateInfo.some(
+                  (info) =>
+                    info.college ===
+                      userdata?.student_details?.college.split(" -")[0] &&
+                    new Date(info.availability_date).toDateString() ===
+                      date.toDateString()
+                )) ||
+              !parsedAvailableDates.some(
+                (d) => d.toDateString() === date.toDateString()
+              ) ||
+              alreadySelectedDates.some(
+                (d) => new Date(d).toDateString() === date.toDateString()
+              )
+            }
+            footer={
+              selected
+                ? `Selected: ${selected.toLocaleDateString()}`
+                : "Pick a day."
+            }
+          />
+        </div>
+      </div>
     </>
   );
 }

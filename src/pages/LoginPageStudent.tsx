@@ -33,7 +33,7 @@ function LoginPageStudent() {
 
     const checkToken = async () => {
       const result = await verifyToken();
-      console.log(result.user);
+
       if (result?.success) {
         const userData = await getUserData({id: result?.user?.student_id});
         setUser(userData);
@@ -201,7 +201,7 @@ function LoginPageStudent() {
           </Button>
 
           <p className="text-md text-blue-600">
-            <i>Develop By:</i> Robert Mayo/Marklan
+            <i>Developed By:</i> Robert Mayo/Marklan
           </p>
         </form>
       </div>

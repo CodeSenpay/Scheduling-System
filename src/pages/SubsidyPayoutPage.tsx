@@ -65,7 +65,7 @@ function SubsidyPayoutPage() {
       const response = await apiClient.post("/scheduling-system/user", data, {
         headers: { "Content-Type": "application/json" },
       });
-      console.log(response.data.data);
+      
       if (response.data.success) {
         setAppointments(response.data.data);
         getAppointmentDates(response.data.data);
@@ -83,7 +83,7 @@ function SubsidyPayoutPage() {
   };
 
   useEffect(() => {
-    console.log(userdata);
+    
     fetchTransactionsByType();
   }, [isOpenCalendar]);
 
@@ -106,6 +106,7 @@ function SubsidyPayoutPage() {
           isOpen={isOpenCalendar}
           handleClose={handleClosingOfModal}
           backgroundColor=""
+          
         >
           <Calendar
             transaction_title="Subsidy"
