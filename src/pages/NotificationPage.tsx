@@ -1,18 +1,18 @@
 import {
-    Box,
-    Card,
-    CardContent,
-    Chip,
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Typography,
-    useMediaQuery,
-    useTheme,
+  Box,
+  Card,
+  CardContent,
+  Chip,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import Loading from "../components/Loading";
@@ -54,7 +54,7 @@ export default function NotificationPage() {
           headers: { "Content-Type": "application/json" },
         }
       );
-
+      console.log(response.data);
       if (response.data.success) {
         setNotifications(response.data.data);
       } else {
@@ -216,8 +216,7 @@ export default function NotificationPage() {
                         {notification.transaction_type}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        <strong>School Year:</strong>{" "}
-                        {notification.school_year}
+                        <strong>School Year:</strong> {notification.school_year}
                       </Typography>
                     </Box>
                   </CardContent>
