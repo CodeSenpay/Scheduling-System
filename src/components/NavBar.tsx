@@ -206,7 +206,7 @@ function NavBar() {
                 ))}
               </Box>
               <Box sx={{ flexGrow: 0, display: "flex", alignItems: "center", gap: 1 }}>
-                <Tooltip title="Notifications">
+                {/* <Tooltip title="Notifications">
                   <IconButton
                     onClick={handleNotificationClick}
                     sx={{
@@ -222,7 +222,7 @@ function NavBar() {
                       )}
                     </Badge>
                   </IconButton>
-                </Tooltip>
+                </Tooltip> */}
                 <Tooltip title="Open settings">
                   <IconButton 
                     onClick={handleOpenUserMenu} 
