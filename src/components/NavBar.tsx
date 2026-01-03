@@ -1,9 +1,9 @@
 import MenuIcon from "@mui/icons-material/Menu";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
+// import NotificationsIcon from "@mui/icons-material/Notifications";
+// import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import AppBar from "@mui/material/AppBar";
 import Avatar from "@mui/material/Avatar";
-import Badge from "@mui/material/Badge";
+// import Badge from "@mui/material/Badge";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
@@ -26,8 +26,8 @@ const settings = ["Profile", "Dashboard", "Logout"];
 function NavBar() {
   const { userdata, setUser } = useUser();
   const [loading, setLoading] = React.useState(false); // Add loading state
-  const [hasNotifications, setHasNotifications] = React.useState(false); // Track notification state
-  const [notificationCount, setNotificationCount] = React.useState(0); // Track notification count
+  // const [hasNotifications, setHasNotifications] = React.useState(false); // Track notification state
+  // const [notificationCount, setNotificationCount] = React.useState(0); // Track notification count
 
   const LogoutStudent = async () => {
     setLoading(true);
@@ -116,30 +116,30 @@ function NavBar() {
     }
   };
 
-  const handleNotificationClick = () => {
-    navigate("/notification");
-  };
+  // const handleNotificationClick = () => {
+  //   navigate("/notification");
+  // };
 
-  // Example: Fetch notifications on component mount
-  React.useEffect(() => {
-    // TODO: Replace with actual API call to fetch notifications
-    // For now, this is a placeholder to demonstrate the functionality
-    const fetchNotifications = async () => {
-      try {
-        // const response = await apiClient.get("/notifications");
-        // setHasNotifications(response.data.length > 0);
-        // setNotificationCount(response.data.length);
+  // // Example: Fetch notifications on component mount
+  // React.useEffect(() => {
+  //   // TODO: Replace with actual API call to fetch notifications
+  //   // For now, this is a placeholder to demonstrate the functionality
+  //   const fetchNotifications = async () => {
+  //     try {
+  //       // const response = await apiClient.get("/notifications");
+  //       // setHasNotifications(response.data.length > 0);
+  //       // setNotificationCount(response.data.length);
         
-        // Placeholder logic - set to true to test the notification icon
-        setHasNotifications(true);
-        setNotificationCount(3);
-      } catch (error) {
-        console.error("Error fetching notifications:", error);
-      }
-    };
+  //       // Placeholder logic - set to true to test the notification icon
+  //       setHasNotifications(true);
+  //       setNotificationCount(3);
+  //     } catch (error) {
+  //       console.error("Error fetching notifications:", error);
+  //     }
+  //   };
 
-    fetchNotifications();
-  }, []);
+  //   fetchNotifications();
+  // }, []);
 
   return (
     <>
