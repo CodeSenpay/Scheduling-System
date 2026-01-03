@@ -1,5 +1,5 @@
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { Button, CircularProgress, TextField, Typography } from "@mui/material";
+import { Button, CircularProgress, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -174,7 +174,7 @@ function LoginPageStudent() {
               },
             }}
           />
-          <Typography
+          {/* <Typography
             variant="body2"
             color="textSecondary"
             className="w-full text-center mb-2"
@@ -186,7 +186,7 @@ function LoginPageStudent() {
             }}
           >
             Hint: Your password is the same as your ARMS Portal password.
-          </Typography>
+          </Typography> */}
           <Button
             variant="contained"
             color="primary"
@@ -201,7 +201,7 @@ function LoginPageStudent() {
           </Button>
 
           <p className="text-md text-blue-600">
-            <i>Developed By:</i> Robert Mayo/Marklan
+            <i>Developed By:</i> Robert Mayo L. Elumba
           </p>
         </form>
       </div>
