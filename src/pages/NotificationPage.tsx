@@ -284,7 +284,7 @@ export default function NotificationPage() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {notifications.map((notification, index) => (
+                  {notifications.map((notification) => (
                     <TableRow
                       key={notification.notification_id}
                       sx={{
