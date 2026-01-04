@@ -33,7 +33,7 @@ function LoginPageStudent() {
 
     const checkToken = async () => {
       const result = await verifyToken();
-
+      console.log("Token verification result:", result);
       if (result?.success) {
         const userData = await getUserData({id: result?.user?.student_id});
         setUser(userData);
