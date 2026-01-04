@@ -31,19 +31,19 @@ function LoginPageStudent() {
   const { setUser } = useUser();
 
 
-    const checkToken = async () => {
-      const result = await verifyToken();
-      console.log("Token verification result:", result);
-      if (result?.success) {
-        const userData = await getUserData({id: result?.user?.student_id});
-        setUser(userData);
-        navigate("/dashboard");
-      }
-    };
+  //   const checkToken = async () => {
+  //     const result = await verifyToken();
+  //     console.log("Token verification result:", result);
+  //     if (result?.success) {
+  //       const userData = await getUserData({id: result?.user?.student_id});
+  //       setUser(userData);
+  //       navigate("/dashboard");
+  //     }
+  //   };
 
-  useEffect(() => {
-    checkToken();
-  }, []);
+  // useEffect(() => {
+  //   checkToken();
+  // }, []);
 
   const handleLogin: SubmitHandler<dataProps> = async (data) => {
     setLoading(true);
